@@ -1,0 +1,12 @@
+diff --git a/sdl/sdl_cgo.go b/sdl/sdl_cgo.go
+--- a/sdl/sdl_cgo.go
++++ b/sdl/sdl_cgo.go
+@@ -3,5 +3,7 @@
+ package sdl
+ 
+ //#cgo windows LDFLAGS: -lSDL2
+-//#cgo linux freebsd darwin openbsd pkg-config: sdl2
++//#cgo linux CFLAGS: -I/usr/include/SDL2 -D_REENTRANT
++//#cgo linux LDFLAGS: -lSDL2
++//#cgo freebsd darwin openbsd pkg-config: sdl2
+ import "C"

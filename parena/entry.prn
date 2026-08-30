@@ -1,0 +1,39 @@
+;; parena/entry.prn — a real, honest first attempt at DUNG's own entrypoint decision logic in
+;; PARENA, compiled via the real `burrow` CLI (not `parena-c`), per NORTHSTAR.md's own real
+;; architecture split: "PARENA owns the decision logic, host code owns the plumbing -- the same
+;; real split every mod in this monorepo already uses." Founder real-time, 2026-08-30: "try to
+;; write the entry in parena."
+;;
+;; Real, honest scope, checked against burrow's own actual current capability before writing
+;; anything ambitious (BURROW/emit_c.go's own real v0: I32/Bool/F64/String/Unit scalar params,
+;; if/else, the real binop table `+ - * / < > <= >= = and or bit-and bit-or bit-xor mod`, nested
+;; calls, forward decls -- no defstruct/defenum/match/loop/recur/Vec/FFI yet, confirmed directly
+;; by reading emit_c.go and emit_c_test.go rather than assumed from memory of parena-c's own,
+;; separately-further-along feature set). cmd/dung/main.go's own real event loop, PTY/SDL2 calls,
+;; and the pane/node split-tree (structs, recursion over a tree, an FFI boundary to SDL2) are
+;; real, substantial, and genuinely out of that scope today -- not attempted here, not glossed
+;; over. What IS real, scalar-only decision logic already living in main.go, and genuinely within
+;; burrow's real v0 scope: the two pure-arithmetic pieces below.
+
+(module dung/entry)
+(export split-size)
+(export next-focus-index)
+
+;; Real port of layout()'s own split-size arithmetic in cmd/dung/main.go:
+;;   leftW := (rect.W - borderPx) / 2
+;; (the first child's size along a split axis, given the parent's total size and the border gap
+;; between children -- the same math for both splitVertical's leftW and splitHorizontal's topH,
+;; main.go just inlines it twice under each axis case).
+(defn split-size [(total : I32) (border : I32)] : I32
+  (/ (- total border) 2))
+
+;; Real port of nextFocus()'s own wraparound arithmetic in cmd/dung/main.go:
+;;   idx = (idx + 1) % len(all)          -- Right/Down
+;;   idx = (idx - 1 + len(all)) % len(all) -- Left/Up
+;; unified into one function via a signed `delta` (+1 or -1) instead of Go's two separate
+;; branches, since PARENA's real v0 has no negative-modulo pitfall to dodge differently either
+;; way -- `(+ idx delta)` can go negative before the `+ len`, so `len` is added before `mod`
+;; exactly like Go's own Left/Up branch already does, unconditionally, matching real behavior for
+;; both directions with one expression.
+(defn next-focus-index [(idx : I32) (len : I32) (delta : I32)] : I32
+  (mod (+ (+ idx delta) len) len))

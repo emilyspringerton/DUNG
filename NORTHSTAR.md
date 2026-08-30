@@ -212,11 +212,35 @@ is doing to make this file viewable is like cliutch it works so good" comment (a
 GitHub link that followed it) already names as the real bar to clear. Named here now so it isn't
 forgotten once real rendering code exists to test it against.
 
+## Real first PARENA entry attempt — real, precise boundary found (2026-08-30)
+
+Founder real-time: "try to write the entry in parena." Checked burrow's own actual current
+capability first (`BURROW/emit_c.go`'s own real v0: scalar I32/Bool/F64/String/Unit params,
+if/else, the real binop table, nested calls — no `defstruct`/`defenum`/`match`/`loop`/FFI yet,
+confirmed by reading `emit_c.go`/`emit_c_test.go` directly, not assumed) before attempting
+anything ambitious. **Real, working, verified**: `parena/entry.prn` ports the two genuinely
+scalar-only decision-logic pieces already living in `cmd/dung/main.go` — `split-size` (the
+split-axis child-size arithmetic `layout()` uses for both `splitVertical`/`splitHorizontal`) and
+`next-focus-index` (the wraparound arithmetic `nextFocus()` uses) — real PARENA source, `burrow
+parse`/`analyze`/`build` all clean, the emitted C `gcc`-compiled and run against real assertions
+matching `main.go`'s own real behavior (`split_size(1440,2)==719`, `next_focus_index(2,3,1)==0`
+wrapping, etc.) — all pass. **Real, precise boundary found, not glossed over**: `parena/
+rect_probe.prn` (a deliberate probe, not wired into `entry.prn`'s exports) defines a `Rect`
+`defstruct` and a function using it — `burrow parse`/`analyze` both accept it fine (general
+PARENA grammar/region rules apply to `defstruct` already), but `burrow build` fails at the exact
+boundary: `emit_c: unsupported top-level form (v0 only understands defn, module, export,
+import)`. Confirms precisely what the rest of the entrypoint (the `Rect`/pane/node structs, the
+event loop, the SDL2 FFI boundary) needs before it can move to PARENA: `defstruct` support in
+burrow's own C emitter specifically (parser/region already ready for it), then `match`/`loop`,
+then FFI — not attempted here, named as real, scoped, later work for BURROW's own next phase, not
+DUNG's to build unilaterally. See `BURROW/NORTHSTAR.md`'s own open-items list for the same finding
+recorded on that side.
+
 ## Real risks and open questions, named honestly
 
-- **Real, hard sequencing dependency on BURROW's own unstarted Phase 3-4** — DUNG's own real
-  editor-domain build is blocked until that lands; not this project's own work to accelerate
-  unilaterally.
+- **DUNG's own PARENA editor-domain build is real, still gated on burrow's own struct/enum/match
+  support landing** (see "Real first PARENA entry attempt" above for the precise, tested boundary)
+  — not this project's own work to accelerate unilaterally.
 - **Bazel rules mix**: this repo needs real C/Go/PARENA build integration (rules_cc-equivalent for
   any Go+cgo/SDL2 pieces, plus genrule-style steps invoking the real `burrow` binary against
   `.prn` source) — not yet designed at the `BUILD.bazel` level.

@@ -1,0 +1,4 @@
+exports_files([
+    "go-sdl2-linux-cflags.patch",
+    "go-sdl2-build-bazel.patch",
+])

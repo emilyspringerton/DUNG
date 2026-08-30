@@ -1,0 +1,18 @@
+;; parena/rect_probe.prn — NOT part of the real entry, a deliberate boundary probe: how far past
+;; entry.prn's scalar-only scope does burrow's real v0 actually reach today? Real cmd/dung/main.go
+;; layout() needs a Rect (x,y,w,h) return value, which needs either a struct or multiple returns
+;; -- neither in burrow's own real, current scope per its own honest gap list. Kept as a probe
+;; file, not wired into entry.prn's exports; delete once burrow's own struct support lands and
+;; this becomes real work instead of a documented gap.
+
+(module dung/rect-probe)
+(export split-rect-left)
+
+(defstruct Rect
+  (x : I32)
+  (y : I32)
+  (w : I32)
+  (h : I32))
+
+(defn split-rect-left [(r : Rect) (border : I32)] : Rect
+  (Rect (get r x) (get r y) (/ (- (get r w) border) 2) (get r h)))

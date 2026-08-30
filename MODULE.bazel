@@ -28,6 +28,39 @@ go_sdk.download(version = "1.25.0")
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//:go.mod")
+
+# Real, precise fix for a real, precise bug, found and root-caused in two stages, not guessed:
+# go-sdl2's own linux/freebsd/darwin/openbsd cgo directive is `//#cgo ... pkg-config: sdl2` --
+# gazelle never invokes pkg-config itself when generating a go_repository's BUILD file
+# (deliberate, for hermeticity), so that line is silently dropped, leaving the sandboxed cgo
+# compile with zero -I/-l flags even though the identical code builds clean under plain `go
+# build` (which does invoke the real system pkg-config, outside Bazel entirely) -- the real,
+# exact cause of `fatal error: SDL.h: No such file or directory`.
+# Stage 1 (go-sdl2-linux-cflags.patch): patched literal `//#cgo linux CFLAGS/LDFLAGS: ...` lines
+# into sdl_cgo.go, since gazelle's #cgo scanner does understand that literal form for other
+# platforms (its own generated BUILD.bazel already had a real windows clinkopts branch from an
+# unconditional `LDFLAGS: -lSDL2` line). Kept as accurate source-level documentation of the real
+# fix, harmless to leave in even though stage 2 below is what actually matters now.
+# Stage 2 (go-sdl2-build-bazel.patch + build_file_generation="off", below) -- empirically
+# required: regenerated and inspected gazelle's own BUILD.bazel output twice after stage 1 and it
+# still never produced a linux copts/clinkopts branch, confirming gazelle's #cgo scanner doesn't
+# reliably turn CFLAGS/LDFLAGS comments into build attributes at all for this package, for
+# whatever reason -- not solved by rephrasing the comment further, so this hands gazelle a fully
+# hand-authored BUILD.bazel for the `sdl` package instead, with the real, verified
+# `pkg-config --cflags/--libs sdl2` values on linux inlined directly, and turns gazelle
+# generation off for this module so it can't overwrite that file with its own guess.
+go_deps.module_override(
+    patches = [
+        "//patches:go-sdl2-linux-cflags.patch",
+        "//patches:go-sdl2-build-bazel.patch",
+    ],
+    patch_strip = 1,
+    path = "github.com/veandco/go-sdl2",
+)
+go_deps.gazelle_override(
+    build_file_generation = "off",
+    path = "github.com/veandco/go-sdl2",
+)
 use_repo(
     go_deps,
     "com_github_veandco_go_sdl2",

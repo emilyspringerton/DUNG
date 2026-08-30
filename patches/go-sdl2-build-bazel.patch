@@ -1,0 +1,94 @@
+--- a/sdl/BUILD.bazel	2026-08-30 10:09:56.876614908 +0000
++++ b/sdl/BUILD.bazel	2026-08-30 10:09:49.392614198 +0000
+@@ -0,0 +1,91 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++# Hand-authored, gazelle generation OFF for this module (see go_deps.gazelle_override in
++# DUNG's own MODULE.bazel): gazelle's #cgo comment scanner reliably turns an unconditional
++# `//#cgo windows LDFLAGS: ...` line into a clinkopts select branch, but never produced a
++# linux copts/clinkopts branch for this package's own `//#cgo linux CFLAGS/LDFLAGS: ...`
++# lines (patched in by go-sdl2-linux-cflags.patch) no matter how they were phrased --
++# empirically confirmed by regenerating and inspecting the auto-generated BUILD.bazel
++# directly, twice, not assumed. Authoring this file directly removes the guesswork: the
++# real `pkg-config --cflags/--libs sdl2` values for linux, verified on the box this was
++# fixed on (Ubuntu, libsdl2-dev via apt), inlined as literal copts/clinkopts.
++go_library(
++    name = "sdl",
++    srcs = [
++        "audio.go",
++        "blendmode.go",
++        "clipboard.go",
++        "cpuinfo.go",
++        "endian.go",
++        "error.go",
++        "events.c",
++        "events.go",
++        "events.h",
++        "filesystem.go",
++        "gamecontroller.go",
++        "gesture.go",
++        "guid.go",
++        "haptic.go",
++        "helpers.go",
++        "hidapi.go",
++        "hints.c",
++        "hints.go",
++        "hints.h",
++        "joystick.go",
++        "keyboard.go",
++        "keycode.go",
++        "loadso.go",
++        "log.c",
++        "log.go",
++        "log.h",
++        "mouse.go",
++        "mutex.go",
++        "pixels.go",
++        "power.go",
++        "rect.go",
++        "render.go",
++        "rwops.go",
++        "scancode.go",
++        "sdl.go",
++        "sdl_cgo.go",
++        "sdl_wrapper.h",
++        "sensor.go",
++        "shape.go",
++        "surface.go",
++        "sysrender.go",
++        "system.c",
++        "system.go",
++        "system.h",
++        "system_android.go",
++        "system_linux.go",
++        "system_windows.go",
++        "syswm.go",
++        "syswm_cocoa.go",
++        "syswm_windows.go",
++        "thread.go",
++        "timer.go",
++        "touch.go",
++        "version.go",
++        "video.go",
++        "vulkan.go",
++    ],
++    cgo = True,
++    copts = select({
++        "@io_bazel_rules_go//go/platform:linux": [
++            "-I/usr/include/SDL2",
++            "-D_REENTRANT",
++        ],
++        "//conditions:default": [],
++    }),
++    clinkopts = select({
++        "@io_bazel_rules_go//go/platform:linux": [
++            "-lSDL2",
++        ],
++        "@io_bazel_rules_go//go/platform:windows": [
++            "-lSDL2",
++        ],
++        "//conditions:default": [],
++    }),
++    importpath = "github.com/veandco/go-sdl2/sdl",
++    visibility = ["//visibility:public"],
++)
