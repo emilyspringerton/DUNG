@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "vterm",
+    srcs = [
+        "scrollback.go",
+        "vterm.go",
+    ],
+    importpath = "dung/internal/vterm",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "vterm_test",
+    srcs = ["vterm_test.go"],
+    embed = [":vterm"],
+)

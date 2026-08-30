@@ -1,0 +1,2 @@
+# Bazel build-output symlinks -- generated, not source.
+bazel-*

@@ -1,0 +1,36 @@
+"""DUNG — the BURROW editor. Bazel module (bzlmod), matching PARENA's own
+build-system convention (DUNG/NORTHSTAR.md: "Bazel-built ... matching
+PARENA's own real build-system convention, not BURROW's own plain
+go.mod"). Phase 1 scope: rules_go + gazelle only, building the Go-hosted
+terminal domain (cmd/dung, internal/vterm, internal/pty, internal/font).
+Real, named open item from NORTHSTAR.md's own risk list, not solved here:
+"Bazel rules mix... not yet designed at the BUILD.bazel level" for the
+future cgo-against-PARENA-emitted-output linking Phase 2+ will need.
+"""
+
+module(
+    name = "dung",
+    version = "0.1.0",
+)
+
+bazel_dep(name = "rules_go", version = "0.63.0")
+bazel_dep(name = "gazelle", version = "0.53.0")
+
+go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
+# 1.25.0, not go.mod's own "go 1.22" floor: gazelle's own internal
+# go_repository_tools fetch step runs a real `go build` that auto-discovers
+# /home/fatbaby/go.work (the monorepo root's own workspace file, `go
+# 1.25.0`) by walking up the directory tree -- GOWORK=off via --repo_env
+# didn't suppress that discovery for this particular internal fetch, so the
+# downloaded SDK version itself has to satisfy the parent go.work's own
+# floor, not just this module's.
+go_sdk.download(version = "1.25.0")
+
+go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
+go_deps.from_file(go_mod = "//:go.mod")
+use_repo(
+    go_deps,
+    "com_github_veandco_go_sdl2",
+    "org_golang_x_image",
+    "org_golang_x_sys",
+)

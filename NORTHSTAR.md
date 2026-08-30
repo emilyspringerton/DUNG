@@ -154,12 +154,44 @@ for `burrow build` to produce something runnable from real `.prn` source. That l
 day, gcc-verified end to end (see "Where this came from" above) — Phase 1 below is real, current
 work now, not still blocked on a separate track.
 
-**DUNG Phase 1 — the real, smallest proof point**: a real SDL2 window (Go host) that (a) renders
-a visor-style drop-down terminal pane (PTY + vterm, hand-ported or vendored from `PITVIPER`'s own
-real, already-working `internal/vterm`/`internal/pty` — the terminal domain doesn't wait on
-BURROW's own emitter work, since it's Go-hosted, not PARENA-compiled), and (b) can split that one
-pane into two via one real i3-primitive — matching the same "smallest real proof point"
-discipline every other real Phase 0/1 in this monorepo already follows. No editor pane yet.
+**DUNG Phase 1 — the real, smallest proof point — real, shipped (2026-08-30).** A real SDL2
+window (Go host, `cmd/dung/main.go`) that (a) renders a visor-style drop-down terminal pane (PTY +
+vterm, vendored verbatim from `PITVIPER`'s own real, already-working `internal/vterm`/
+`internal/pty`/`internal/font` into DUNG's own `internal/`, package names/APIs kept identical —
+the terminal domain doesn't wait on BURROW's own emitter work, since it's Go-hosted, not
+PARENA-compiled), and (b) can split that one pane into two via a real i3-primitive binary
+container tree (`splitVertical`/`splitHorizontal`, Ctrl+Shift+Enter/Ctrl+Shift+O, Alt+Arrow
+focus-cycling) — matching the same "smallest real proof point" discipline every other real Phase
+0/1 in this monorepo already follows. No editor pane yet, per this phase's own real scope.
+
+**Real, verified proof, not just written**: `go build`/`go vet`/`go test` clean across all four
+packages (`cmd/dung`, `internal/vterm`, `internal/pty`, `internal/font` — `go test`: font +
+vterm's own already-existing PITVIPER test suites pass unmodified, plus new
+`cmd/dung/split_test.go` covering the split-tree logic itself: `leaves` traversal order,
+`replaceNode` at root and inside a container, `nextFocus` forward/backward cycling and wraparound).
+Ran for real under Xvfb (`--show` flag added for exactly this: headless/scripted verification with
+no way to send the real F12 toggle) — a real bash spawned via a real PTY, its real colored SGR
+prompt (`user@host:cwd$`) rendered correctly through the vterm→font→SDL2 pipeline, screenshot
+captured, process stable, no panics. **Real, honest, named simplifications, not solved here**: F12
+only fires while the window already has focus (a true global hotkey needs X11 `XGrabKey`, outside
+what SDL2's own event loop gives for free); `nextFocus` is visit-order cycling, not geometric
+nearest-neighbor. Bazel build scaffolded (`MODULE.bazel` + per-package `BUILD.bazel`, bzlmod
+`rules_go`/`gazelle`/`go_deps.from_file`) and iterated on for real against three real, distinct
+failures, not abandoned at the first one: (1) `rules_go` 0.50.1/`gazelle` 0.39.1 against the
+installed Bazel 9.2.0 hit a removed `CcInfo` symbol — fixed by bumping to `rules_go` 0.63.0/
+`gazelle` 0.53.0; (2) gazelle's own internal `go_repository_tools` fetch runs a real `go build`
+that auto-discovers `/home/fatbaby/go.work` (the monorepo root's own workspace file, `go 1.25.0`)
+by walking up the directory tree — `--repo_env=GOWORK=off` didn't suppress that discovery for
+this specific internal fetch, so the downloaded SDK version itself had to satisfy the parent
+`go.work`'s own floor; fixed by bumping `go_sdk.download` to `1.25.0`. **Real, still-open blocker,
+found precisely, not glossed over**: `go-sdl2`'s own `#cgo pkg-config: sdl2` directive doesn't
+resolve inside Bazel's sandboxed cgo compile action — `fatal error: SDL.h: No such file or
+directory` compiling `sdl_wrapper.h`, even though `pkg-config --cflags sdl2` resolves fine on the
+host and the identical code builds clean under plain `go build`. This is a real, separate rabbit
+hole from Phase 1's own functional proof (which is complete and verified via `go build`, above) —
+wiring a system C library's cgo flags into `rules_go`'s hermetic sandbox (via explicit `copts`/
+`cdeps` on a patched `go_repository` entry, or a `cc_library` wrapping the system SDL2 install) is
+real, scoped, later work, not solved here.
 
 **DUNG Phase 2 — the real first ground-up PARENA editor slice**, gated on Phase 0: port
 `stdlib/editor/buffer.prn`'s own real logic first (the most foundational real editor domain,

@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "font",
+    srcs = ["font.go"],
+    importpath = "dung/internal/font",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@org_golang_x_image//font",
+        "@org_golang_x_image//font/basicfont",
+        "@org_golang_x_image//math/fixed",
+    ],
+)
+
+go_test(
+    name = "font_test",
+    srcs = ["font_test.go"],
+    deps = [":font"],
+)

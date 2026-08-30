@@ -1,0 +1,13 @@
+load("@rules_go//go:def.bzl", "go_binary")
+
+go_binary(
+    name = "dung",
+    srcs = ["main.go"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//internal/font",
+        "//internal/pty",
+        "//internal/vterm",
+        "@com_github_veandco_go_sdl2//sdl",
+    ],
+)

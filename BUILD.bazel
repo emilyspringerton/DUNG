@@ -1,0 +1,6 @@
+load("@gazelle//:def.bzl", "gazelle")
+
+# gazelle can regenerate/update the per-package BUILD.bazel files below from
+# go.mod + import graph (`bazel run //:gazelle`) -- written by hand for this
+# first pass since Phase 1 is a small, fixed package set.
+gazelle(name = "gazelle")

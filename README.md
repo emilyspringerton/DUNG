@@ -19,8 +19,13 @@ and gcc-verified end to end, clearing DUNG's own Phase 0.
 
 ## Status
 
-Phase 0 (toolchain) real, cleared. Phase 1 (visor-style drop-down terminal, Go-hosted, i3-split —
-doesn't wait on `burrow`) in progress.
+Phase 0 (toolchain) real, cleared. Phase 1 real, shipped (2026-08-30): `cmd/dung` is a real SDL2
+window with a visor-style drop-down terminal (PTY + vterm, vendored from `PITVIPER`) and a real
+i3-primitive binary split (Ctrl+Shift+Enter/Ctrl+Shift+O, Alt+Arrow focus). `go build`/`go vet`/
+`go test` clean; ran for real under Xvfb with a real bash prompt rendering through the full
+vterm→font→SDL2 pipeline, screenshot verified. No editor pane yet — that's Phase 2. See
+`NORTHSTAR.md` for the full verified proof and the honest open items (no true global hotkey yet,
+Bazel build scaffolded but not yet verified-green).
 
 ## Related
 
