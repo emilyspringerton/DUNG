@@ -167,6 +167,16 @@ BURROW→DUNG toolchain relationship actually works.
 API, the chat pane, Emily Prime integration (matching `PITVIPER`'s own already-planned
 Milestone 4).
 
+## Real acceptance test file, named ahead of the code that will need it
+
+Founder real-time: "make sure we are testing with the backlog when we dev DUNG its big." Once any
+real file-viewing/editor rendering exists (Phase 2+), `EMILY/BACKLOG.md` is the real, standing
+stress-test file — genuinely huge (25000+ lines as of 2026-08-30, mixed-language, real, organic
+growth, not a synthetic benchmark), and the same real file the founder's own "whatever the browser
+is doing to make this file viewable is like cliutch it works so good" comment (and the raw
+GitHub link that followed it) already names as the real bar to clear. Named here now so it isn't
+forgotten once real rendering code exists to test it against.
+
 ## Real risks and open questions, named honestly
 
 - **Real, hard sequencing dependency on BURROW's own unstarted Phase 3-4** — DUNG's own real
