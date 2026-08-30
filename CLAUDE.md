@@ -12,8 +12,9 @@ compiler toolchain, not a Go-primary hand-port).
 
 ## Status
 
-Scoping only. `BURROW`'s own real emit capability (Phase 3-4, not started) is a hard prerequisite
-for this project's own editor-domain build — named directly in `NORTHSTAR.md`, not glossed over.
+Phase 0 (toolchain, gated on `BURROW`'s own Phase 3-4) is real and cleared — shipped same-day,
+gcc-verified end to end (`EMILY/BACKLOG.md` S206-88, Apple #17060). Phase 1 (a visor-style
+drop-down terminal, Go-hosted, i3-primitive split — doesn't wait on `burrow`) in progress.
 
 ## Related Repos
 

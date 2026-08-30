@@ -118,12 +118,14 @@ Real, corrected split (see "Where this came from" above):
   hand-port fallback.
 - **The real `burrow` CLI is this project's own compiler toolchain** — `DUNG`'s own Bazel build
   invokes the real `burrow` binary (`BURROW`, this same session's own Go+PARENA reimplementation
-  of `parena-c`) to compile that PARENA source, not the original C-based `parena-c`. **Real,
-  honest, current blocker, named directly, not glossed over**: `burrow build` today reports "not
-  yet implemented" (`BURROW/NORTHSTAR.md`'s own Phase 3-4 — region analyzer + emitter parity —
-  hasn't started yet). DUNG's own real build cannot succeed end to end until that work lands.
-  This makes BURROW's own Phase 3/4 a real, concrete, now-higher-priority prerequisite for DUNG,
-  not a parallel, independent track.
+  of `parena-c`) to compile that PARENA source, not the original C-based `parena-c`. **Corrected,
+  same day**: this doc originally named `burrow build` reporting "not yet implemented" as a real,
+  current blocker (`BURROW`'s own Phase 3-4 — region analyzer + emitter parity — not started yet).
+  That blocker cleared the same day it was written: `BURROW`'s own Phase 3-4 shipped with a real,
+  gcc-verified end-to-end proof (`burrow build` against PAPERCRAFT's own real
+  `stdlib/papercraft/level_mod.prn`, compiled and run for real, all assertions passing —
+  `BURROW/NORTHSTAR.md` Phase 3-4, `EMILY/BACKLOG.md` S206-88, Apple #17060). DUNG's own Phase 0
+  ("unblock the real toolchain") is real, now, not still pending — Phase 1/2 below are unblocked.
 - **Go, real and direct, for what SDL2/PTY genuinely need** (matching `PITVIPER`'s own
   already-proven real stack — SDL2 window/event-loop/renderer via cgo, FreeType2 glyph rendering,
   PTY via `openpty(3)`, the vterm/scrollback state machine): real, substantial systems-level
@@ -146,10 +148,11 @@ Real, corrected split (see "Where this came from" above):
 
 ## Real, phased plan
 
-**DUNG Phase 0 — unblock the real toolchain**: this project's own real Bazel build is gated on
+**DUNG Phase 0 — unblock the real toolchain — real, cleared (2026-08-30).** Was gated on
 `BURROW`'s own Phase 3-4 (region analyzer + emitter parity) landing enough real emit capability
-for `burrow build` to produce something runnable from real `.prn` source. Not this project's own
-work to do — a real, named dependency on BURROW's own separate track.
+for `burrow build` to produce something runnable from real `.prn` source. That landed the same
+day, gcc-verified end to end (see "Where this came from" above) — Phase 1 below is real, current
+work now, not still blocked on a separate track.
 
 **DUNG Phase 1 — the real, smallest proof point**: a real SDL2 window (Go host) that (a) renders
 a visor-style drop-down terminal pane (PTY + vterm, hand-ported or vendored from `PITVIPER`'s own

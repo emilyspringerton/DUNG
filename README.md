@@ -12,14 +12,15 @@ reimplementation of `parena-c`) — DUNG is BURROW's own real, live, flagship do
 See `NORTHSTAR.md` for the full real scoping pass: the real UX foundation adopted directly from
 `EmilyOS/docs/legacy-archive/gui-v0.1-design-capture.md` (a "tmux × i3 hybrid" layout, a
 no-single-click double-click-speed interaction contract, posture-aware non-modal safety feedback),
-the real architecture split (ground-up PARENA for the editor domain, Go for SDL2/PTY plumbing),
-and the real, honest current blocker: `burrow build` isn't implemented yet, so this project's own
-real build is gated on `BURROW`'s own Phase 3-4 (region analyzer + emitter parity) landing first.
+the real architecture split (ground-up PARENA for the editor domain, Go for SDL2/PTY plumbing).
+**Corrected, same day**: this doc originally named `burrow build` as not implemented yet as a real
+blocker — `BURROW`'s own Phase 3-4 (region analyzer + emitter parity) shipped the same day, real
+and gcc-verified end to end, clearing DUNG's own Phase 0.
 
 ## Status
 
-Scoping only. No code yet — `BURROW`'s own real emit capability is a hard prerequisite for this
-project's own editor-domain build to work end to end.
+Phase 0 (toolchain) real, cleared. Phase 1 (visor-style drop-down terminal, Go-hosted, i3-split —
+doesn't wait on `burrow`) in progress.
 
 ## Related
 
