@@ -1,0 +1,11 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+# entry_gen.go is real, checked-in generated output (see its own "Code generated ... DO NOT EDIT"
+# header) -- regenerate via `burrow build parena/entry.prn -o internal/burrowgen/entry_gen.go`
+# (see cmd/dung/main.go's own //go:generate directive), not hand-edited.
+go_library(
+    name = "burrowgen",
+    srcs = ["entry_gen.go"],
+    importpath = "dung/internal/burrowgen",
+    visibility = ["//visibility:public"],
+)

@@ -236,6 +236,25 @@ then FFI — not attempted here, named as real, scoped, later work for BURROW's 
 DUNG's to build unilaterally. See `BURROW/NORTHSTAR.md`'s own open-items list for the same finding
 recorded on that side.
 
+## Real Go mod wired in — the loop closes (2026-08-30)
+
+Founder real-time: "continue adding to DUNG's parena work, we want to emit go with burrow" →
+"once we get burrow basic stuff working of course." `BURROW`'s own Phase 6 (a real, native Go
+emission target) shipped in response — the real, concrete host its own NORTHSTAR.md only had a
+named candidate for (`GoblinFoxDragon`, not committed to) until now. `internal/burrowgen/
+entry_gen.go` is the real, checked-in output of `burrow build parena/entry.prn -o internal/
+burrowgen/entry_gen.go` (a `//go:generate` directive on `cmd/dung/main.go` documents the real
+regenerate command) — `cmd/dung/main.go` now calls `burrowgen.SplitSize`/`burrowgen.
+NextFocusIndex` directly, a real Go import, **no cgo/FFI boundary at all** — the exact real
+advantage a native Go target has over the C target for a Go-hosted consumer like this one.
+Verified real, not just wired: `go build`/`go vet`/`go test` clean (the existing `split_test.go`
+suite now exercises the real burrow-emitted function transitively, not a hand-written stand-in),
+a real `bazel build //...` clean (new `internal/burrowgen/BUILD.bazel`, `cmd/dung/BUILD.bazel`
+updated), and the real SDL2 visor binary run under Xvfb — identical, correct rendering to before
+the mod was wired in, both via plain `go build` and via the real Bazel artifact. This is the real
+"mods first everything" loop closing for DUNG specifically: PARENA source is the actual source of
+truth for this decision logic now, not just a parallel proof sitting next to hand-written Go.
+
 ## Real risks and open questions, named honestly
 
 - **DUNG's own PARENA editor-domain build is real, still gated on burrow's own struct/enum/match

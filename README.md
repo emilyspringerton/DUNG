@@ -22,10 +22,14 @@ and gcc-verified end to end, clearing DUNG's own Phase 0.
 Phase 0 (toolchain) real, cleared. Phase 1 real, shipped (2026-08-30): `cmd/dung` is a real SDL2
 window with a visor-style drop-down terminal (PTY + vterm, vendored from `PITVIPER`) and a real
 i3-primitive binary split (Ctrl+Shift+Enter/Ctrl+Shift+O, Alt+Arrow focus). `go build`/`go vet`/
-`go test` clean; ran for real under Xvfb with a real bash prompt rendering through the full
-vterm→font→SDL2 pipeline, screenshot verified. No editor pane yet — that's Phase 2. See
-`NORTHSTAR.md` for the full verified proof and the honest open items (no true global hotkey yet,
-Bazel build scaffolded but not yet verified-green).
+`go test` clean, `bazel build //...` clean (real pkg-config/cgo-sandbox fix for the SDL2 dep); ran
+for real under Xvfb with a real bash prompt rendering through the full vterm→font→SDL2 pipeline,
+screenshot verified, both via plain `go build` and via the real Bazel artifact. First real PARENA
+mod also wired in: `internal/burrowgen/entry_gen.go` (checked-in output of `burrow build
+parena/entry.prn -o ...`, `BURROW`'s own new Phase 6 Go emission target) supplies `layout()`'s
+split-size math and `nextFocus()`'s wraparound math directly — a real Go import, no cgo/FFI
+boundary. No editor pane yet — that's Phase 2. See `NORTHSTAR.md` for the full verified proof and
+the honest open items (no true global hotkey yet).
 
 ## Related
 

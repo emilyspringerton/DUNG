@@ -27,6 +27,8 @@
 // level concerns." Alt+Arrow moves focus between panes.
 package main
 
+//go:generate /home/fatbaby/BURROW/burrow build ../../parena/entry.prn -o ../../internal/burrowgen/entry_gen.go
+
 import (
 	"flag"
 	"fmt"
@@ -36,6 +38,7 @@ import (
 
 	"github.com/veandco/go-sdl2/sdl"
 
+	"dung/internal/burrowgen"
 	"dung/internal/font"
 	"dung/internal/pty"
 	"dung/internal/vterm"
@@ -149,11 +152,17 @@ func layout(n *node, rect sdl.Rect) {
 	const borderPx = 2
 	switch n.axis {
 	case splitVertical:
-		leftW := (rect.W - borderPx) / 2
+		// Real decision logic lives in PARENA now, not here -- burrowgen.SplitSize is
+		// parena/entry.prn's own split-size, compiled to Go via `burrow build -o *.go`
+		// (Phase 6, real, shipped: DUNG is the real host that finally asked for it). This
+		// hand-written Go call is the "host owns the plumbing" half of NORTHSTAR.md's own
+		// "PARENA owns the decision logic, host owns the plumbing" split -- the mod itself
+		// decides the number, this file just wires the SDL2 rect around it.
+		leftW := burrowgen.SplitSize(rect.W, borderPx)
 		layout(n.children[0], sdl.Rect{X: rect.X, Y: rect.Y, W: leftW, H: rect.H})
 		layout(n.children[1], sdl.Rect{X: rect.X + leftW + borderPx, Y: rect.Y, W: rect.W - leftW - borderPx, H: rect.H})
 	case splitHorizontal:
-		topH := (rect.H - borderPx) / 2
+		topH := burrowgen.SplitSize(rect.H, borderPx)
 		layout(n.children[0], sdl.Rect{X: rect.X, Y: rect.Y, W: rect.W, H: topH})
 		layout(n.children[1], sdl.Rect{X: rect.X, Y: rect.Y + topH + borderPx, W: rect.W, H: rect.H - topH - borderPx})
 	}
@@ -358,11 +367,16 @@ func nextFocus(root, cur *node, sym sdl.Keycode) *node {
 			break
 		}
 	}
+	// Real decision logic lives in PARENA now, not here -- burrowgen.NextFocusIndex is
+	// parena/entry.prn's own next-focus-index, compiled to Go via `burrow build -o *.go`.
+	// This hand-written Go code is just the SDL2 key-symbol dispatch; the actual
+	// wraparound arithmetic is the mod's, same "PARENA decides, host wires" split
+	// layout() above already follows.
 	switch sym {
 	case sdl.K_RIGHT, sdl.K_DOWN:
-		idx = (idx + 1) % len(all)
+		idx = int(burrowgen.NextFocusIndex(int32(idx), int32(len(all)), 1))
 	case sdl.K_LEFT, sdl.K_UP:
-		idx = (idx - 1 + len(all)) % len(all)
+		idx = int(burrowgen.NextFocusIndex(int32(idx), int32(len(all)), -1))
 	}
 	return all[idx]
 }

@@ -5,6 +5,7 @@ go_binary(
     srcs = ["main.go"],
     visibility = ["//visibility:public"],
     deps = [
+        "//internal/burrowgen",
         "//internal/font",
         "//internal/pty",
         "//internal/vterm",

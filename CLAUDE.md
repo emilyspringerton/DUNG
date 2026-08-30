@@ -15,9 +15,11 @@ compiler toolchain, not a Go-primary hand-port).
 Phase 0 (toolchain, gated on `BURROW`'s own Phase 3-4) is real and cleared — shipped same-day,
 gcc-verified end to end (`EMILY/BACKLOG.md` S206-88, Apple #17060). Phase 1 (a visor-style
 drop-down terminal, Go-hosted, i3-primitive split — doesn't wait on `burrow`) real and shipped
-same-day: `go build`/`go vet`/`go test` clean, verified running for real under Xvfb (real bash,
-real colored PTY output rendered through vterm→font→SDL2). See `NORTHSTAR.md` for the full proof
-and honest open items.
+same-day: `go build`/`go vet`/`go test` clean, `bazel build //...` clean, verified running for
+real under Xvfb (real bash, real colored PTY output rendered through vterm→font→SDL2) both ways.
+First real PARENA mod wired in: `internal/burrowgen` (generated via `BURROW`'s own new Phase 6 Go
+emission target) supplies real decision logic to `cmd/dung/main.go` directly, no cgo/FFI. See
+`NORTHSTAR.md` for the full proof and honest open items.
 
 ## Related Repos
 
