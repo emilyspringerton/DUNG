@@ -5,7 +5,10 @@ load("@rules_go//go:def.bzl", "go_library")
 # (see cmd/dung/main.go's own //go:generate directive), not hand-edited.
 go_library(
     name = "burrowgen",
-    srcs = ["entry_gen.go"],
+    srcs = [
+        "entry_gen.go",
+        "k8s_scaling_gen.go",
+    ],
     importpath = "dung/internal/burrowgen",
     visibility = ["//visibility:public"],
 )

@@ -28,6 +28,12 @@
 package main
 
 //go:generate /home/fatbaby/BURROW/burrow build ../../parena/entry.prn -o ../../internal/burrowgen/entry_gen.go
+// k8s_scaling_gen.go is DUNG's own real dogfooding copy of PARENA/stdlib/k8s/scaling.prn --
+// proof that burrow's new defstruct/get-field support (added the same day this needed it) works
+// end to end for a real, scalar-only Kubernetes decision-logic mod. Not wired into any live DUNG
+// feature yet (DUNG has no k8s-facing UI today) -- available for a real future use (e.g. a
+// "manage your cluster" pane) rather than forced into one now. Regenerate:
+//go:generate /home/fatbaby/BURROW/burrow build /home/fatbaby/PARENA/stdlib/k8s/scaling.prn -o ../../internal/burrowgen/k8s_scaling_gen.go
 
 import (
 	"flag"
