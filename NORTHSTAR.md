@@ -255,6 +255,48 @@ the mod was wired in, both via plain `go build` and via the real Bazel artifact.
 "mods first everything" loop closing for DUNG specifically: PARENA source is the actual source of
 truth for this decision logic now, not just a parallel proof sitting next to hand-written Go.
 
+## Real "write it in LO" investigation — a real prerequisite found, not built around (2026-09-03)
+
+Founder, kanban priority queue: "CONTINUE WORKING ON DUNG IDE write it in LO." Investigated
+concretely against `LO`'s own real, current compiler (`LO/internal/emitter/emitter.go`), not
+assumed from memory of LO's earlier, narrower state. Two real, compounding gaps found — full
+detail in `LO/NORTHSTAR.md`'s own mirrored "DUNG integration" section:
+
+1. LO's own arithmetic is mod-4 (base4 state algebra) by design, not general integer arithmetic
+   — genuinely can't express `split-size`/`next-focus-index`'s own real division/modulo over
+   arbitrary pixel widths and pane counts. A narrower, honestly-4-state-shaped slice (e.g. which
+   of Left/Right/Up/Down was pressed) could fit, in principle.
+2. Even for that narrower case: `lo build`'s own compiled output is always a single,
+   self-contained, zero-parameter computation over compile-time literals — there is no way today
+   to emit a real, exported, runtime-callable function the way `parena/entry.prn`'s own
+   `(defn ... ) (export ...)` (and this project's own `internal/burrowgen`, generated from it)
+   already is. This blocks *any* LO integration into DUNG right now, not just the arithmetic-
+   heavy pieces.
+
+**Real, honest conclusion**: not attempted this pass. The concrete prerequisite (LO emitting a
+real, parameterized, exported `defn` from a bare top-level `Lambda` instead of only supporting
+an immediately-invoked one) is scoped in `LO/NORTHSTAR.md` but not built — a real compiler
+feature deserving its own design/test pass, not a rushed patch under one kanban card's time
+budget.
+
+**Real, concrete unblock instead, same session**: founder, confirming the pivot — "ok write it
+in parena and go? right? with burrow/." `BURROW`'s own `emit_c.go` gained real `defstruct`/
+`get-field` support the same day (see `BURROW/CLAUDE.md`), closing the exact gap this project's
+own `parena/rect_probe.prn` found live on 2026-08-30. `rect_probe.prn` itself updated and
+re-verified: its ORIGINAL version (`(Rect (get r x) ...)`, constructing and returning a new
+`Rect`) now fails with a real, honest `emit_c: unknown identifier 'Rect'` — confirmed live,
+not silently miscompiled — because struct **construction** is deliberately still unsupported by
+either `burrow` target (the same "receives, doesn't construct" scope `emit_go.go`'s own struct
+support already committed to). Rewritten to the real, working slice instead: a struct
+*parameter* plus a real `get-field` read, scalar return — `rect-left-child-width(r, border)`,
+verified `burrow build` → real `gcc -Wall -Wextra` → run, correct result (710 for a 1440-wide
+rect with a 20px border). **Real, current, narrower scope for DUNG's own Phase 2** (the
+ground-up `stdlib/editor/buffer.prn` port): structs can now be passed in and read from, but any
+real editor function that needs to CONSTRUCT and return a new struct (very plausibly common in
+buffer/pane logic) still can't — a real, concrete design constraint for that phase's own next
+scoping pass, narrower than the full `emit.c`-parity wait this doc originally named, but not a
+full unblock either.
+
 ## Real risks and open questions, named honestly
 
 - **DUNG's own PARENA editor-domain build is real, still gated on burrow's own struct/enum/match

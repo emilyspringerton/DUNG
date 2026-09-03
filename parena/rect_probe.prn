@@ -1,12 +1,26 @@
 ;; parena/rect_probe.prn — NOT part of the real entry, a deliberate boundary probe: how far past
-;; entry.prn's scalar-only scope does burrow's real v0 actually reach today? Real cmd/dung/main.go
-;; layout() needs a Rect (x,y,w,h) return value, which needs either a struct or multiple returns
-;; -- neither in burrow's own real, current scope per its own honest gap list. Kept as a probe
-;; file, not wired into entry.prn's exports; delete once burrow's own struct support lands and
-;; this becomes real work instead of a documented gap.
+;; entry.prn's scalar-only scope does burrow's real v0 actually reach today?
+;;
+;; Real, updated 2026-09-03: the ORIGINAL gap this probe found live (2026-08-30, `emit_c:
+;; unsupported top-level form` on any `defstruct` at all) is now closed — see
+;; BURROW/NORTHSTAR.md's own "Real, concrete dogfooding data" section and this commit's own real,
+;; live-verified fix (a Rect-shaped struct compiled via `burrow build`, gcc-compiled, and run
+;; correctly). Real cmd/dung/main.go's own `layout()` still can't be ported as a single PARENA
+;; function today, though, for a DIFFERENT, real, honest reason found while updating this exact
+;; probe: `layout()` needs to CONSTRUCT and RETURN a new `Rect`, and struct construction is
+;; deliberately not emitted by either `burrow` target yet (the same real "receives, doesn't
+;; construct" scope `emit_go.go`'s own struct support already committed to for its own real
+;; k8s/helm triggers) — confirmed live: the ORIGINAL version of this file (`(Rect (get r x) ...)`)
+;; now fails with a real, honest `emit_c: unknown identifier 'Rect'`, not a silent miscompile.
+;;
+;; Rewritten below to stay within what's real and working today: a struct PARAMETER, real
+;; `get-field` reads, a SCALAR return — proving the actually-unblocked slice (DUNG can pass its
+;; own Rect/pane/node state INTO real PARENA decision logic now) without overclaiming the
+;; still-open slice (constructing a new Rect to return stays real, later work, alongside
+;; `match`/`loop`/`Vec`).
 
 (module dung/rect-probe)
-(export split-rect-left)
+(export rect-left-child-width)
 
 (defstruct Rect
   (x : I32)
@@ -14,5 +28,10 @@
   (w : I32)
   (h : I32))
 
-(defn split-rect-left [(r : Rect) (border : I32)] : Rect
-  (Rect (get r x) (get r y) (/ (- (get r w) border) 2) (get r h)))
+;; Real port of the WIDTH half of layout()'s own split-size arithmetic (packages/simulation's
+;; own split-size, ported earlier to raw PARENA in entry.prn, now taking the real Rect struct
+;; directly instead of a bare `total` I32 -- the real, concrete win this pass unblocks: DUNG's
+;; own real Rect value can be handed straight to PARENA decision logic, no manual field
+;; unpacking on the Go side first).
+(defn rect-left-child-width [(r : Rect) (border : I32)] : I32
+  (/ (- (get-field r :w) border) 2))
