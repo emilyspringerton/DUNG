@@ -1,3 +1,7 @@
+## 2026-09-14
+
+- docs: real scoping pass for PE macro recording (re-homed from NOCK S416-07) — record-to-.prn design, open playback-mechanism question (sess-20260905-0720-ec33e7c5)
+
 ## 2026-09-03
 - Investigated "write DUNG in LO" (founder, kanban priority queue), found LO genuinely not ready (mod-4-only arithmetic, no runtime-parameterized exported functions -- see LO/NORTHSTAR.md), founder confirmed the real pivot: "ok write it in parena and go? right? with burrow/." Real, concrete unblock the same session: BURROW's own emit_c.go gained defstruct/get-field support, closing the exact gap parena/rect_probe.prn found live on 2026-08-30. Updated and re-verified rect_probe.prn: its original struct-CONSTRUCTING version now fails with a real, honest error (construction is deliberately still unsupported by either burrow target), rewritten to the real, working slice -- a struct parameter + get-field read, scalar return -- verified burrow build -> gcc -> run, correct result. NORTHSTAR.md updated with the real, narrower current scope for Phase 2 (structs can be passed in and read, not yet constructed). (sess-20260902-2008-ed50169e)
 
