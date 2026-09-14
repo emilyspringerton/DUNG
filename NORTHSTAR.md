@@ -202,6 +202,55 @@ BURROW→DUNG toolchain relationship actually works.
 API, the chat pane, Emily Prime integration (matching `PITVIPER`'s own already-planned
 Milestone 4).
 
+## Real scoping pass: PE macro recording (2026-09-14, moved here from NOCK's backlog)
+
+Founder: "the parena editor will even allow us to program macros repeatable written in parena."
+This card (`EMILY/BACKLOG.md` S416-07) had been filed under NOCK's own SECTION 416 purely because
+it was bundled in the same founder quote as the "PE replaces `internal/nock/imagemagick.go`" idea
+(S416-05) — checked directly and confirmed a mis-home: "PE" (the PARENA Editor) is this project,
+DUNG, not `IDUNA/internal/nock`. `NOCK_NORTHSTAR.md` itself already says "no macro/scripting layer
+exists anywhere in `internal/nock` yet" — correct, because it was never NOCK's to build. Re-scoped
+here instead, against DUNG's own real, already-designed editor primitives, not started as code.
+
+**The real hook already exists, unbuilt.** `PARENA/stdlib/editor/events.prn`'s `subscribe` +
+`EditorEvent` (`OnKeybind`/`OnDragDrop`/`OnPaste`/`OnSave`/`OnChange`) and `plugin.prn`'s
+`register-command` are exactly the two primitives a macro layer needs — recording taps the same
+event stream a plugin would subscribe to; playback re-invokes the same named commands a plugin
+would register. No new PARENA-side vocabulary needs inventing; this is a consumer of what's
+already designed, not a new subsystem.
+
+**The founder's own literal framing is the real constraint, not a suggestion**: a macro is
+*written in PARENA* — real `.prn` source, not a proprietary binary/JSON macro format. So:
+
+- **Recording** = while armed, append each dispatched `(OnKeybind ...)`/command invocation as a
+  real PARENA call expression to a growing buffer; "stop recording, name it" emits a real
+  `(defn record-<name> [] : Unit (command-a) (command-b) ...)` into a `.prn` file DUNG owns
+  (e.g. `macros/<name>.prn`) — a macro IS a `.prn` source file, inspectable and hand-editable like
+  any other, matching the founder's own words exactly.
+- **Playback — the one real open design question, named honestly, not solved here**: DUNG's own
+  current real pipeline (Phase 2+) compiles `.prn` → Go via `burrow build` at BUILD time, then
+  links it into the binary (`internal/burrowgen`, per "Real Go mod wired in" above). A macro
+  recorded during a live session can't wait for a recompile-and-relink cycle to become runnable —
+  that's real, bad UX for something meant to feel like "record, then replay." Two real paths, not
+  yet chosen between:
+  1. **Compile-on-demand**: shell out to `burrow build` for just the new macro file and dynamically
+     load the result (Go plugin (`.so`) or a small subprocess) — real, but `burrow`'s own emitted
+     Go has never been loaded as a runtime plugin anywhere in this monorepo; unproven.
+  2. **Interpret, don't compile**: DUNG carries a small runtime dispatcher over a `Vec Command`
+     (command name + args) built directly from the recorded event stream, skipping PARENA
+     compilation for playback entirely and reserving the emitted `.prn` file as the real,
+     human-readable/editable *record* of the macro, not its execution path. Cheaper, doesn't need
+     `burrow`'s still-missing Vec/loop/FFI support (per "Real risks" above) — recommended as the
+     real Phase A, with path 1 revisited once `burrow` matures.
+- **Gated the same way Phase 2 itself is gated**: recording only makes sense once there's a real
+  buffer/command surface to record against (Phase 2, `buffer.prn` port) — this doesn't unblock
+  ahead of that, and is realistically a Phase 4+ item, after TextMate/Spotlight/plugin-API land
+  (those give macros something worth recording).
+
+**Not done this pass**: no code. This is a scoping correction (right repo, right doc) plus a real,
+named playback-mechanism decision point for whoever picks up Phase 4+ — the same "scoping now,
+building later" discipline this doc's own Phase 3+ line already follows.
+
 ## Real acceptance test file, named ahead of the code that will need it
 
 Founder real-time: "make sure we are testing with the backlog when we dev DUNG its big." Once any
